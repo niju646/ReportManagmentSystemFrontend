@@ -33,6 +33,7 @@ export interface User {
   
   export interface NotificationReport {
     notificationId: number;
+    details:string,///
     type: string;
     template: string;
     sendingTime: string;
@@ -52,6 +53,8 @@ export interface User {
       sent: boolean;
       groups: number[];
       totalRecipients: number;
+      studentNames?: string[];///////
+      webinarTitle: string;////
       summary: NotificationSummary;
     }[];
     totalNotifications: number;

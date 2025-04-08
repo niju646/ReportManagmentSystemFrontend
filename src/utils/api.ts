@@ -58,7 +58,7 @@ export const logout = async (refreshToken: string) => {
 };
 
 export const getReport = async (notificationId: number) => {
-  const response = await api.get(`/report/${notificationId}`);
+  const response = await api.get(`/notification/${notificationId}`);
   return response.data;
 };
 
