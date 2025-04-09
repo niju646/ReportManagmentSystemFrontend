@@ -54,7 +54,18 @@ export interface User {
       groups: number[];
       totalRecipients: number;
       studentNames?: string[];///////
+      
       webinarTitle: string;////
+      recipients: {
+        type: string;
+        recipient: string;
+        recipientName: string;
+        recipientEmail: string | null;
+        recipientPhone: string | null;
+        status: string;
+        dateUpdated: string;
+        errorMessage: string | null;
+      }[];
       summary: NotificationSummary;
     }[];
     totalNotifications: number;

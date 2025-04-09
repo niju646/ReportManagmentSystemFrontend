@@ -19,9 +19,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     const storedUser = localStorage.getItem("user");
+   ;
     if (accessToken && storedUser) {
       setUser(JSON.parse(storedUser));
       setIsAuthenticated(true);
+    console.log("hiiiiii");
     }
   }, []);
 
