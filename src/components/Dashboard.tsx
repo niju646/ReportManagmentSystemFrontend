@@ -716,46 +716,96 @@ const Dashboard: React.FC = () => {
     );
   };
 
+  // // Filter notifications based on all criteria
+  // const filteredNotifications = summary?.notifications
+  //   .map((notification) => {
+  //     const filteredRecipients = notification.recipients.filter((recipient) => {
+  //       const matchesType = selectedTypes.length === 0 || selectedTypes.includes(notification.type);
+  //       const matchesStatus =
+  //         selectedStatuses.length === 0 || selectedStatuses.includes(recipient.status);
+  //       const notificationDate = new Date(notification.sendingTime);
+  //       const matchesStartDate = !startDate || notificationDate >= new Date(startDate);
+  //       const matchesEndDate = !endDate || notificationDate <= new Date(endDate);
+  //       const matchesWebinar =
+  //         !webinarFilter ||
+  //         notification.webinarTitle?.toLowerCase().includes(webinarFilter.toLowerCase());
+  //       const matchesStudent =
+  //         !studentFilter ||
+  //         recipient.recipientName?.toLowerCase().includes(studentFilter.toLowerCase());
+
+  //       return (
+  //         matchesType &&
+  //         matchesStatus &&
+  //         matchesStartDate &&
+  //         matchesEndDate &&
+  //         matchesWebinar &&
+  //         matchesStudent
+  //       );
+  //     });
+
+  //     return {
+  //       ...notification,
+  //       recipients: filteredRecipients,
+  //       totalRecipients: filteredRecipients.length,
+  //       summary: {
+  //         delivered: filteredRecipients.filter(r => r.status === "delivered" || r.status === "read").length,
+  //         sent: filteredRecipients.filter(r => r.status === "sent").length,
+  //         failed: filteredRecipients.filter(r => r.status === "failed").length,
+  //         pending: filteredRecipients.filter(r => ["queued", "sending"].includes(r.status)).length,
+  //       },
+  //     };
+  //   })
+  //   .filter((notification) => notification.recipients.length > 0) || [];
+
   // Filter notifications based on all criteria
-  const filteredNotifications = summary?.notifications
-    .map((notification) => {
-      const filteredRecipients = notification.recipients.filter((recipient) => {
-        const matchesType = selectedTypes.length === 0 || selectedTypes.includes(notification.type);
-        const matchesStatus =
-          selectedStatuses.length === 0 || selectedStatuses.includes(recipient.status);
-        const notificationDate = new Date(notification.sendingTime);
-        const matchesStartDate = !startDate || notificationDate >= new Date(startDate);
-        const matchesEndDate = !endDate || notificationDate <= new Date(endDate);
-        const matchesWebinar =
-          !webinarFilter ||
-          notification.webinarTitle?.toLowerCase().includes(webinarFilter.toLowerCase());
-        const matchesStudent =
-          !studentFilter ||
-          recipient.recipientName?.toLowerCase().includes(studentFilter.toLowerCase());
+const filteredNotifications = summary?.notifications
+.map((notification) => {
+  const filteredRecipients = notification.recipients.filter((recipient) => {
+    const matchesType = selectedTypes.length === 0 || selectedTypes.includes(notification.type);
+    const matchesStatus =
+      selectedStatuses.length === 0 || selectedStatuses.includes(recipient.status);
+    const notificationDate = new Date(notification.sendingTime);
 
-        return (
-          matchesType &&
-          matchesStatus &&
-          matchesStartDate &&
-          matchesEndDate &&
-          matchesWebinar &&
-          matchesStudent
-        );
-      });
+    // Convert startDate and endDate to Date objects, handling endDate as the end of the day
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
+    if (end) {
+      end.setHours(23, 59, 59, 999); // Set to end of the day
+    }
 
-      return {
-        ...notification,
-        recipients: filteredRecipients,
-        totalRecipients: filteredRecipients.length,
-        summary: {
-          delivered: filteredRecipients.filter(r => r.status === "delivered" || r.status === "read").length,
-          sent: filteredRecipients.filter(r => r.status === "sent").length,
-          failed: filteredRecipients.filter(r => r.status === "failed").length,
-          pending: filteredRecipients.filter(r => ["queued", "sending"].includes(r.status)).length,
-        },
-      };
-    })
-    .filter((notification) => notification.recipients.length > 0) || [];
+    const matchesStartDate = !start || notificationDate >= start;
+    const matchesEndDate = !end || notificationDate <= end;
+
+    const matchesWebinar =
+      !webinarFilter ||
+      notification.webinarTitle?.toLowerCase().includes(webinarFilter.toLowerCase());
+    const matchesStudent =
+      !studentFilter ||
+      recipient.recipientName?.toLowerCase().includes(studentFilter.toLowerCase());
+
+    return (
+      matchesType &&
+      matchesStatus &&
+      matchesStartDate &&
+      matchesEndDate &&
+      matchesWebinar &&
+      matchesStudent
+    );
+  });
+
+  return {
+    ...notification,
+    recipients: filteredRecipients,
+    totalRecipients: filteredRecipients.length,
+    summary: {
+      delivered: filteredRecipients.filter(r => r.status === "delivered" || r.status === "read").length,
+      sent: filteredRecipients.filter(r => r.status === "sent").length,
+      failed: filteredRecipients.filter(r => r.status === "failed").length,
+      pending: filteredRecipients.filter(r => ["queued", "sending"].includes(r.status)).length,
+    },
+  };
+})
+.filter((notification) => notification.recipients.length > 0) || [];
 
   const toggleTypeDropdown = () => setIsTypeDropdownOpen((prev) => !prev);
   const toggleStatusDropdown = () => setIsStatusDropdownOpen((prev) => !prev);
@@ -885,12 +935,63 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            {/* Filter Section */}
+            
+
+            {loading && !summary ? (
+              <div className="flex justify-center items-center h-64">
+                <Loader2 size={48} className="animate-spin text-blue-500" />
+              </div>
+            ) : summary ? (
+              <>
+                {/* Stats Cards */}
+
+
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+                  <div className="lg:col-span-1">
+                    <StatusCard
+                      title="Total Notifications"
+                      value={summary.totalNotifications}
+                      color="border-blue-500"
+                    />
+                  </div>
+                  <div className="lg:col-span-1">
+                    <StatusCard
+                      title="Total Messages"
+                      value={summary.totalMessages}
+                      color="border-purple-500"
+                    />
+                  </div>
+                  <div className="lg:col-span-3 grid grid-cols-4 gap-4">
+                    <StatusCard
+                      title="Delivered"
+                      value={summary.overallSummary.delivered}
+                      color="border-green-500"
+                    />
+                    <StatusCard
+                      title="Sent"
+                      value={summary.overallSummary.sent}
+                      color="border-blue-500"
+                    />
+                    <StatusCard
+                      title="Failed"
+                      value={summary.overallSummary.failed}
+                      color="border-red-500"
+                    />
+                    <StatusCard
+                      title="Pending"
+                      value={summary.overallSummary.pending}
+                      color="border-yellow-500"
+                    />
+                  </div>
+                </div>
+
+                {/* Filter Section  here starts*/}
             <div className="flex flex-wrap gap-4 mb-6">
               {/* Type Filter */}
               <div className="w-full md:w-auto">
                 <label htmlFor="type-filter" className="block text-sm font-medium text-gray-700 mb-2">
-                  Type
+                  Notification
                 </label>
                 <div className="relative inline-block w-full md:w-64">
                   <button
@@ -1122,51 +1223,8 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            {loading && !summary ? (
-              <div className="flex justify-center items-center h-64">
-                <Loader2 size={48} className="animate-spin text-blue-500" />
-              </div>
-            ) : summary ? (
-              <>
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-                  <div className="lg:col-span-1">
-                    <StatusCard
-                      title="Total Notifications"
-                      value={summary.totalNotifications}
-                      color="border-blue-500"
-                    />
-                  </div>
-                  <div className="lg:col-span-1">
-                    <StatusCard
-                      title="Total Messages"
-                      value={summary.totalMessages}
-                      color="border-purple-500"
-                    />
-                  </div>
-                  <div className="lg:col-span-3 grid grid-cols-4 gap-4">
-                    <StatusCard
-                      title="Delivered"
-                      value={summary.overallSummary.delivered}
-                      color="border-green-500"
-                    />
-                    <StatusCard
-                      title="Sent"
-                      value={summary.overallSummary.sent}
-                      color="border-blue-500"
-                    />
-                    <StatusCard
-                      title="Failed"
-                      value={summary.overallSummary.failed}
-                      color="border-red-500"
-                    />
-                    <StatusCard
-                      title="Pending"
-                      value={summary.overallSummary.pending}
-                      color="border-yellow-500"
-                    />
-                  </div>
-                </div>
+
+
 
                 {/* Notifications Table */}
                 <div className="bg-white rounded-lg shadow-md overflow-hidden">
