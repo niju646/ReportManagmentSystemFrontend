@@ -1,7 +1,5 @@
 
 
-
-
 // import React, { useState, useEffect } from "react";
 // import { useNavigate } from "react-router-dom";
 // import { useAuth } from "../context/AuthContext";
@@ -10,6 +8,7 @@
 // import NotificationReport from "./NotificationReport";
 // import { Loader2, RefreshCw, LogOut, ArrowLeft, Eye, Download } from "lucide-react";
 // import Papa from "papaparse";
+// import Select from "react-select";
 
 // const Dashboard: React.FC = () => {
 //   const [summary, setSummary] = useState<SummaryReport | null>(null);
@@ -95,46 +94,96 @@
 //     );
 //   };
 
+//   // // Filter notifications based on all criteria
+//   // const filteredNotifications = summary?.notifications
+//   //   .map((notification) => {
+//   //     const filteredRecipients = notification.recipients.filter((recipient) => {
+//   //       const matchesType = selectedTypes.length === 0 || selectedTypes.includes(notification.type);
+//   //       const matchesStatus =
+//   //         selectedStatuses.length === 0 || selectedStatuses.includes(recipient.status);
+//   //       const notificationDate = new Date(notification.sendingTime);
+//   //       const matchesStartDate = !startDate || notificationDate >= new Date(startDate);
+//   //       const matchesEndDate = !endDate || notificationDate <= new Date(endDate);
+//   //       const matchesWebinar =
+//   //         !webinarFilter ||
+//   //         notification.webinarTitle?.toLowerCase().includes(webinarFilter.toLowerCase());
+//   //       const matchesStudent =
+//   //         !studentFilter ||
+//   //         recipient.recipientName?.toLowerCase().includes(studentFilter.toLowerCase());
+
+//   //       return (
+//   //         matchesType &&
+//   //         matchesStatus &&
+//   //         matchesStartDate &&
+//   //         matchesEndDate &&
+//   //         matchesWebinar &&
+//   //         matchesStudent
+//   //       );
+//   //     });
+
+//   //     return {
+//   //       ...notification,
+//   //       recipients: filteredRecipients,
+//   //       totalRecipients: filteredRecipients.length,
+//   //       summary: {
+//   //         delivered: filteredRecipients.filter(r => r.status === "delivered" || r.status === "read").length,
+//   //         sent: filteredRecipients.filter(r => r.status === "sent").length,
+//   //         failed: filteredRecipients.filter(r => r.status === "failed").length,
+//   //         pending: filteredRecipients.filter(r => ["queued", "sending"].includes(r.status)).length,
+//   //       },
+//   //     };
+//   //   })
+//   //   .filter((notification) => notification.recipients.length > 0) || [];
+
 //   // Filter notifications based on all criteria
-//   const filteredNotifications = summary?.notifications
-//     .map((notification) => {
-//       const filteredRecipients = notification.recipients.filter((recipient) => {
-//         const matchesType = selectedTypes.length === 0 || selectedTypes.includes(notification.type);
-//         const matchesStatus =
-//           selectedStatuses.length === 0 || selectedStatuses.includes(recipient.status);
-//         const notificationDate = new Date(notification.sendingTime);
-//         const matchesStartDate = !startDate || notificationDate >= new Date(startDate);
-//         const matchesEndDate = !endDate || notificationDate <= new Date(endDate);
-//         const matchesWebinar =
-//           !webinarFilter ||
-//           notification.webinarTitle?.toLowerCase().includes(webinarFilter.toLowerCase());
-//         const matchesStudent =
-//           !studentFilter ||
-//           recipient.recipientName?.toLowerCase().includes(studentFilter.toLowerCase());
+// const filteredNotifications = summary?.notifications
+// .map((notification) => {
+//   const filteredRecipients = notification.recipients.filter((recipient) => {
+//     const matchesType = selectedTypes.length === 0 || selectedTypes.includes(notification.type);
+//     const matchesStatus =
+//       selectedStatuses.length === 0 || selectedStatuses.includes(recipient.status);
+//     const notificationDate = new Date(notification.sendingTime);
 
-//         return (
-//           matchesType &&
-//           matchesStatus &&
-//           matchesStartDate &&
-//           matchesEndDate &&
-//           matchesWebinar &&
-//           matchesStudent
-//         );
-//       });
+//     // Convert startDate and endDate to Date objects, handling endDate as the end of the day
+//     const start = startDate ? new Date(startDate) : null;
+//     const end = endDate ? new Date(endDate) : null;
+//     if (end) {
+//       end.setHours(23, 59, 59, 999); // Set to end of the day
+//     }
 
-//       return {
-//         ...notification,
-//         recipients: filteredRecipients,
-//         totalRecipients: filteredRecipients.length,
-//         summary: {
-//           delivered: filteredRecipients.filter(r => r.status === "delivered" || r.status === "read").length,
-//           sent: filteredRecipients.filter(r => r.status === "sent").length,
-//           failed: filteredRecipients.filter(r => r.status === "failed").length,
-//           pending: filteredRecipients.filter(r => ["queued", "sending"].includes(r.status)).length,
-//         },
-//       };
-//     })
-//     .filter((notification) => notification.recipients.length > 0) || [];
+//     const matchesStartDate = !start || notificationDate >= start;
+//     const matchesEndDate = !end || notificationDate <= end;
+
+//     const matchesWebinar =
+//       !webinarFilter ||
+//       notification.webinarTitle?.toLowerCase().includes(webinarFilter.toLowerCase());
+//     const matchesStudent =
+//       !studentFilter ||
+//       recipient.recipientName?.toLowerCase().includes(studentFilter.toLowerCase());
+
+//     return (
+//       matchesType &&
+//       matchesStatus &&
+//       matchesStartDate &&
+//       matchesEndDate &&
+//       matchesWebinar &&
+//       matchesStudent
+//     );
+//   });
+
+//   return {
+//     ...notification,
+//     recipients: filteredRecipients,
+//     totalRecipients: filteredRecipients.length,
+//     summary: {
+//       delivered: filteredRecipients.filter(r => r.status === "delivered" || r.status === "read").length,
+//       sent: filteredRecipients.filter(r => r.status === "sent").length,
+//       failed: filteredRecipients.filter(r => r.status === "failed").length,
+//       pending: filteredRecipients.filter(r => ["queued", "sending"].includes(r.status)).length,
+//     },
+//   };
+// })
+// .filter((notification) => notification.recipients.length > 0) || [];
 
 //   const toggleTypeDropdown = () => setIsTypeDropdownOpen((prev) => !prev);
 //   const toggleStatusDropdown = () => setIsStatusDropdownOpen((prev) => !prev);
@@ -157,14 +206,14 @@
 //   // Get unique webinar titles and student names for autocomplete
 //   const webinarTitles = Array.from(
 //     new Set(summary?.notifications.map((n) => n.webinarTitle).filter(Boolean))
-//   );
+//   ).map((title) => ({ value: title, label: title }));
 //   const studentNames = Array.from(
 //     new Set(
 //       summary?.notifications
 //         .flatMap((n) => n.recipients.map((r) => r.recipientName))
 //         .filter(Boolean)
 //     )
-//   );
+//   ).map((name) => ({ value: name, label: name }));
 
 //   // Function to download filtered data as CSV
 //   const downloadCSV = () => {
@@ -228,7 +277,7 @@
 //                 setSelectedNotificationId(null);
 //                 setSelectedReport(null);
 //               }}
-//               className="mb-6 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500  hover:scale-105 transition-transform duration-300"
+//               className="mb-6 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
 //             >
 //               <ArrowLeft size={16} className="mr-2" /> Back to Summary
 //             </button>
@@ -240,7 +289,7 @@
 //               <button
 //                 onClick={fetchSummary}
 //                 disabled={loading}
-//                 className="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed  hover:scale-105 transition-transform duration-300"
+//                 className="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
 //               >
 //                 {loading ? (
 //                   <Loader2 size={16} className="mr-2 animate-spin" />
@@ -256,7 +305,7 @@
 //                 {filteredNotifications.length > 0 && (
 //                   <button
 //                     onClick={downloadCSV}
-//                     className="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 hover:scale-105 transition-transform duration-300"
+//                     className="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all"
 //                   >
 //                     <Download size={16} className="mr-2" /> Download CSV
 //                   </button>
@@ -264,8 +313,7 @@
 //               </div>
 //             </div>
 
-           
-           
+            
 
 //             {loading && !summary ? (
 //               <div className="flex justify-center items-center h-64">
@@ -274,6 +322,9 @@
 //             ) : summary ? (
 //               <>
 //                 {/* Stats Cards */}
+
+
+
 //                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
 //                   <div className="lg:col-span-1">
 //                     <StatusCard
@@ -313,20 +364,18 @@
 //                   </div>
 //                 </div>
 
-//               {/* changed */}
-//                {/* Filter Section */}
-
-//               <div className="flex flex-wrap gap-4 mb-6">
+//                 {/* Filter Section  here starts*/}
+//             <div className="flex flex-wrap gap-4 mb-6">
 //               {/* Type Filter */}
 //               <div className="w-full md:w-auto">
 //                 <label htmlFor="type-filter" className="block text-sm font-medium text-gray-700 mb-2">
-//                   Type
+//                   Notification
 //                 </label>
 //                 <div className="relative inline-block w-full md:w-64">
 //                   <button
 //                     type="button"
 //                     onClick={toggleTypeDropdown}
-//                     className="w-full bg-white border border-gray-300 rounded-md py-2 pl-3 pr-10 text-sm leading-5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none flex justify-between items-center "
+//                     className="w-full bg-white border border-gray-300 rounded-md py-2 pl-3 pr-10 text-sm leading-5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none flex justify-between items-center"
 //                   >
 //                     <span>{selectedTypes.length > 0 ? selectedTypes.join(", ") : "Select Types"}</span>
 //                     <svg
@@ -480,20 +529,37 @@
 //                 <label htmlFor="webinar-filter" className="block text-sm font-medium text-gray-700 mb-2">
 //                   Webinar
 //                 </label>
-//                 <input
-//                   type="text"
-//                   id="webinar-filter"
-//                   list="webinar-titles"
-//                   value={webinarFilter}
-//                   onChange={(e) => setWebinarFilter(e.target.value)}
+//                 <Select
+//                   options={webinarTitles}
+//                   value={webinarFilter ? { value: webinarFilter, label: webinarFilter } : null}
+//                   onChange={(option) => setWebinarFilter(option ? option.value : "")}
 //                   placeholder="Type to filter webinars"
-//                   className="w-full md:w-64 bg-white border border-gray-300 rounded-md py-2 px-3 text-sm leading-5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+//                   className="w-full md:w-64"
+//                   classNamePrefix="react-select"
+//                   isClearable
+//                   isSearchable
+//                   menuPlacement="auto"
+//                   styles={{
+//                     control: (provided) => ({
+//                       ...provided,
+//                       borderRadius: "4px",
+//                       borderColor: "#d1d5db",
+//                       boxShadow: "none",
+//                       "&:hover": { borderColor: "#93c5fd" },
+//                     }),
+//                     menu: (provided) => ({
+//                       ...provided,
+//                       marginTop: "0",
+//                       borderRadius: "4px",
+//                       boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+//                     }),
+//                     option: (provided, state) => ({
+//                       ...provided,
+//                       backgroundColor: state.isFocused ? "#e0f2fe" : "white",
+//                       color: state.isFocused ? "#1e40af" : "#374151",
+//                     }),
+//                   }}
 //                 />
-//                 <datalist id="webinar-titles">
-//                   {webinarTitles.map((title) => (
-//                     <option key={title} value={title} />
-//                   ))}
-//                 </datalist>
 //               </div>
 
 //               {/* Student Filter */}
@@ -501,22 +567,42 @@
 //                 <label htmlFor="student-filter" className="block text-sm font-medium text-gray-700 mb-2">
 //                   Student
 //                 </label>
-//                 <input
-//                   type="text"
-//                   id="student-filter"
-//                   list="student-names"
-//                   value={studentFilter}
-//                   onChange={(e) => setStudentFilter(e.target.value)}
+//                 <Select
+//                   options={studentNames}
+//                   value={studentFilter ? { value: studentFilter, label: studentFilter } : null}
+//                   onChange={(option) => setStudentFilter(option ? option.value : "")}
 //                   placeholder="Type to filter students"
-//                   className="w-full md:w-64 bg-white border border-gray-300 rounded-md py-2 px-3 text-sm leading-5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+//                   className="w-full md:w-64"
+//                   classNamePrefix="react-select"
+//                   isClearable
+//                   isSearchable
+//                   menuPlacement="auto"
+//                   styles={{
+//                     control: (provided) => ({
+//                       ...provided,
+//                       borderRadius: "4px",
+//                       borderColor: "#d1d5db",
+//                       boxShadow: "none",
+//                       "&:hover": { borderColor: "#93c5fd" },
+//                     }),
+//                     menu: (provided) => ({
+//                       ...provided,
+//                       marginTop: "0",
+//                       borderRadius: "4px",
+//                       boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+//                     }),
+//                     option: (provided, state) => ({
+//                       ...provided,
+//                       backgroundColor: state.isFocused ? "#e0f2fe" : "white",
+//                       color: state.isFocused ? "#1e40af" : "#374151",
+//                     }),
+//                   }}
 //                 />
-//                 <datalist id="student-names">
-//                   {studentNames.map((name) => (
-//                     <option key={name} value={name} />
-//                   ))}
-//                 </datalist>
 //               </div>
 //             </div>
+
+
+
 
 //                 {/* Notifications Table */}
 //                 <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -589,7 +675,7 @@
 //                               <td className="px-6 py-4 whitespace-nowrap text-sm">
 //                                 <button
 //                                   onClick={() => handleViewReport(notification.notificationId)}
-//                                   className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all "
+//                                   className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
 //                                 >
 //                                   <Eye size={14} className="mr-1" /> View
 //                                 </button>
@@ -622,15 +708,18 @@
 // export default Dashboard;
 
 
+
+//2
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getSummary, getReport } from "../utils/api";
 import { type SummaryReport } from "../types";
 import NotificationReport from "./NotificationReport";
-import { Loader2, RefreshCw, LogOut, ArrowLeft, Eye, Download } from "lucide-react";
+import { Loader2, RefreshCw, LogOut, ArrowLeft, Eye, Download, Plus } from "lucide-react";
 import Papa from "papaparse";
 import Select from "react-select";
+import toast from "react-hot-toast";
 
 const Dashboard: React.FC = () => {
   const [summary, setSummary] = useState<SummaryReport | null>(null);
@@ -674,6 +763,7 @@ const Dashboard: React.FC = () => {
 
   const handleLogout = async () => {
     await logoutUser();
+    toast.success("Successfully logged out");
     navigate("/login");
   };
 
@@ -716,96 +806,55 @@ const Dashboard: React.FC = () => {
     );
   };
 
-  // // Filter notifications based on all criteria
-  // const filteredNotifications = summary?.notifications
-  //   .map((notification) => {
-  //     const filteredRecipients = notification.recipients.filter((recipient) => {
-  //       const matchesType = selectedTypes.length === 0 || selectedTypes.includes(notification.type);
-  //       const matchesStatus =
-  //         selectedStatuses.length === 0 || selectedStatuses.includes(recipient.status);
-  //       const notificationDate = new Date(notification.sendingTime);
-  //       const matchesStartDate = !startDate || notificationDate >= new Date(startDate);
-  //       const matchesEndDate = !endDate || notificationDate <= new Date(endDate);
-  //       const matchesWebinar =
-  //         !webinarFilter ||
-  //         notification.webinarTitle?.toLowerCase().includes(webinarFilter.toLowerCase());
-  //       const matchesStudent =
-  //         !studentFilter ||
-  //         recipient.recipientName?.toLowerCase().includes(studentFilter.toLowerCase());
-
-  //       return (
-  //         matchesType &&
-  //         matchesStatus &&
-  //         matchesStartDate &&
-  //         matchesEndDate &&
-  //         matchesWebinar &&
-  //         matchesStudent
-  //       );
-  //     });
-
-  //     return {
-  //       ...notification,
-  //       recipients: filteredRecipients,
-  //       totalRecipients: filteredRecipients.length,
-  //       summary: {
-  //         delivered: filteredRecipients.filter(r => r.status === "delivered" || r.status === "read").length,
-  //         sent: filteredRecipients.filter(r => r.status === "sent").length,
-  //         failed: filteredRecipients.filter(r => r.status === "failed").length,
-  //         pending: filteredRecipients.filter(r => ["queued", "sending"].includes(r.status)).length,
-  //       },
-  //     };
-  //   })
-  //   .filter((notification) => notification.recipients.length > 0) || [];
-
   // Filter notifications based on all criteria
-const filteredNotifications = summary?.notifications
-.map((notification) => {
-  const filteredRecipients = notification.recipients.filter((recipient) => {
-    const matchesType = selectedTypes.length === 0 || selectedTypes.includes(notification.type);
-    const matchesStatus =
-      selectedStatuses.length === 0 || selectedStatuses.includes(recipient.status);
-    const notificationDate = new Date(notification.sendingTime);
+  const filteredNotifications = summary?.notifications
+    .map((notification) => {
+      const filteredRecipients = notification.recipients.filter((recipient) => {
+        const matchesType = selectedTypes.length === 0 || selectedTypes.includes(notification.type);
+        const matchesStatus =
+          selectedStatuses.length === 0 || selectedStatuses.includes(recipient.status);
+        const notificationDate = new Date(notification.sendingTime);
 
-    // Convert startDate and endDate to Date objects, handling endDate as the end of the day
-    const start = startDate ? new Date(startDate) : null;
-    const end = endDate ? new Date(endDate) : null;
-    if (end) {
-      end.setHours(23, 59, 59, 999); // Set to end of the day
-    }
+        // Convert startDate and endDate to Date objects, handling endDate as the end of the day
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+        if (end) {
+          end.setHours(23, 59, 59, 999); // Set to end of the day
+        }
 
-    const matchesStartDate = !start || notificationDate >= start;
-    const matchesEndDate = !end || notificationDate <= end;
+        const matchesStartDate = !start || notificationDate >= start;
+        const matchesEndDate = !end || notificationDate <= end;
 
-    const matchesWebinar =
-      !webinarFilter ||
-      notification.webinarTitle?.toLowerCase().includes(webinarFilter.toLowerCase());
-    const matchesStudent =
-      !studentFilter ||
-      recipient.recipientName?.toLowerCase().includes(studentFilter.toLowerCase());
+        const matchesWebinar =
+          !webinarFilter ||
+          notification.webinarTitle?.toLowerCase().includes(webinarFilter.toLowerCase());
+        const matchesStudent =
+          !studentFilter ||
+          recipient.recipientName?.toLowerCase().includes(studentFilter.toLowerCase());
 
-    return (
-      matchesType &&
-      matchesStatus &&
-      matchesStartDate &&
-      matchesEndDate &&
-      matchesWebinar &&
-      matchesStudent
-    );
-  });
+        return (
+          matchesType &&
+          matchesStatus &&
+          matchesStartDate &&
+          matchesEndDate &&
+          matchesWebinar &&
+          matchesStudent
+        );
+      });
 
-  return {
-    ...notification,
-    recipients: filteredRecipients,
-    totalRecipients: filteredRecipients.length,
-    summary: {
-      delivered: filteredRecipients.filter(r => r.status === "delivered" || r.status === "read").length,
-      sent: filteredRecipients.filter(r => r.status === "sent").length,
-      failed: filteredRecipients.filter(r => r.status === "failed").length,
-      pending: filteredRecipients.filter(r => ["queued", "sending"].includes(r.status)).length,
-    },
-  };
-})
-.filter((notification) => notification.recipients.length > 0) || [];
+      return {
+        ...notification,
+        recipients: filteredRecipients,
+        totalRecipients: filteredRecipients.length,
+        summary: {
+          delivered: filteredRecipients.filter(r => r.status === "delivered" || r.status === "read").length,
+          sent: filteredRecipients.filter(r => r.status === "sent").length,
+          failed: filteredRecipients.filter(r => r.status === "failed").length,
+          pending: filteredRecipients.filter(r => ["queued", "sending"].includes(r.status)).length,
+        },
+      };
+    })
+    .filter((notification) => notification.recipients.length > 0) || [];
 
   const toggleTypeDropdown = () => setIsTypeDropdownOpen((prev) => !prev);
   const toggleStatusDropdown = () => setIsStatusDropdownOpen((prev) => !prev);
@@ -849,7 +898,8 @@ const filteredNotifications = summary?.notifications
         Email: recipient.recipientEmail || "N/A",
         Phone: recipient.recipientPhone || "N/A",
         Status: recipient.status,
-      }))
+      })),
+      
     );
 
     const csv = Papa.unparse(csvData);
@@ -911,7 +961,7 @@ const filteredNotifications = summary?.notifications
               <button
                 onClick={fetchSummary}
                 disabled={loading}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed  hover:scale-105 transition-transform duration-300"
               >
                 {loading ? (
                   <Loader2 size={16} className="mr-2 animate-spin" />
@@ -927,15 +977,19 @@ const filteredNotifications = summary?.notifications
                 {filteredNotifications.length > 0 && (
                   <button
                     onClick={downloadCSV}
-                    className="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all"
+                    className="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500  hover:scale-105 transition-transform duration-300"
                   >
                     <Download size={16} className="mr-2" /> Download CSV
                   </button>
                 )}
+               {user?.role == "admin" && ( <button
+                  onClick={() => navigate("/add-teacher")}
+                  className="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  hover:scale-105 transition-transform duration-300"
+                >
+                  <Plus size={16} className="mr-2" /> Manage User
+                </button>)}
               </div>
             </div>
-
-            
 
             {loading && !summary ? (
               <div className="flex justify-center items-center h-64">
@@ -944,9 +998,6 @@ const filteredNotifications = summary?.notifications
             ) : summary ? (
               <>
                 {/* Stats Cards */}
-
-
-
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
                   <div className="lg:col-span-1">
                     <StatusCard
@@ -986,245 +1037,242 @@ const filteredNotifications = summary?.notifications
                   </div>
                 </div>
 
-                {/* Filter Section  here starts*/}
-            <div className="flex flex-wrap gap-4 mb-6">
-              {/* Type Filter */}
-              <div className="w-full md:w-auto">
-                <label htmlFor="type-filter" className="block text-sm font-medium text-gray-700 mb-2">
-                  Notification
-                </label>
-                <div className="relative inline-block w-full md:w-64">
-                  <button
-                    type="button"
-                    onClick={toggleTypeDropdown}
-                    className="w-full bg-white border border-gray-300 rounded-md py-2 pl-3 pr-10 text-sm leading-5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none flex justify-between items-center"
-                  >
-                    <span>{selectedTypes.length > 0 ? selectedTypes.join(", ") : "Select Types"}</span>
-                    <svg
-                      className={`h-5 w-5 text-gray-400 ml-2 transform ${isTypeDropdownOpen ? "rotate-180" : ""}`}
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                  {isTypeDropdownOpen && (
-                    <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10 type-dropdown-menu">
-                      <label className="flex items-center px-4 py-2 text-sm text-gray-700">
-                        <input
-                          type="checkbox"
-                          value="email"
-                          checked={selectedTypes.includes("email")}
-                          onChange={handleTypeChange}
-                          className="mr-2 leading-tight"
-                        />
-                        <span>Email</span>
-                      </label>
-                      <label className="flex items-center px-4 py-2 text-sm text-gray-700">
-                        <input
-                          type="checkbox"
-                          value="sms"
-                          checked={selectedTypes.includes("sms")}
-                          onChange={handleTypeChange}
-                          className="mr-2 leading-tight"
-                        />
-                        <span>SMS</span>
-                      </label>
-                      <label className="flex items-center px-4 py-2 text-sm text-gray-700">
-                        <input
-                          type="checkbox"
-                          value="whatsapp"
-                          checked={selectedTypes.includes("whatsapp")}
-                          onChange={handleTypeChange}
-                          className="mr-2 leading-tight"
-                        />
-                        <span>WhatsApp</span>
-                      </label>
+                {/* Filter Section */}
+                <div className="flex flex-wrap gap-4 mb-6">
+                  {/* Type Filter */}
+                  <div className="w-full md:w-auto">
+                    <label htmlFor="type-filter" className="block text-sm font-medium text-gray-700 mb-2">
+                      Notification
+                    </label>
+                    <div className="relative inline-block w-full md:w-64">
+                      <button
+                        type="button"
+                        onClick={toggleTypeDropdown}
+                        className="w-full bg-white border border-gray-300 rounded-md py-2 pl-3 pr-10 text-sm leading-5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none flex justify-between items-center"
+                      >
+                        <span>{selectedTypes.length > 0 ? selectedTypes.join(", ") : "Select Types"}</span>
+                        <svg
+                          className={`h-5 w-5 text-gray-400 ml-2 transform ${isTypeDropdownOpen ? "rotate-180" : ""}`}
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                      {isTypeDropdownOpen && (
+                        <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10 type-dropdown-menu">
+                          <label className="flex items-center px-4 py-2 text-sm text-gray-700">
+                            <input
+                              type="checkbox"
+                              value="email"
+                              checked={selectedTypes.includes("email")}
+                              onChange={handleTypeChange}
+                              className="mr-2 leading-tight"
+                            />
+                            <span>Email</span>
+                          </label>
+                          <label className="flex items-center px-4 py-2 text-sm text-gray-700">
+                            <input
+                              type="checkbox"
+                              value="sms"
+                              checked={selectedTypes.includes("sms")}
+                              onChange={handleTypeChange}
+                              className="mr-2 leading-tight"
+                            />
+                            <span>SMS</span>
+                          </label>
+                          <label className="flex items-center px-4 py-2 text-sm text-gray-700">
+                            <input
+                              type="checkbox"
+                              value="whatsapp"
+                              checked={selectedTypes.includes("whatsapp")}
+                              onChange={handleTypeChange}
+                              className="mr-2 leading-tight"
+                            />
+                            <span>WhatsApp</span>
+                          </label>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              </div>
+                  </div>
 
-              {/* Status Filter */}
-              <div className="w-full md:w-auto">
-                <label htmlFor="status-filter" className="block text-sm font-medium text-gray-700 mb-2">
-                  Status
-                </label>
-                <div className="relative inline-block w-full md:w-64">
-                  <button
-                    type="button"
-                    onClick={toggleStatusDropdown}
-                    className="w-full bg-white border border-gray-300 rounded-md py-2 pl-3 pr-10 text-sm leading-5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none flex justify-between items-center"
-                  >
-                    <span>{selectedStatuses.length > 0 ? selectedStatuses.join(", ") : "Select Status"}</span>
-                    <svg
-                      className={`h-5 w-5 text-gray-400 ml-2 transform ${isStatusDropdownOpen ? "rotate-180" : ""}`}
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                  {isStatusDropdownOpen && (
-                    <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10 status-dropdown-menu">
-                      <label className="flex items-center px-4 py-2 text-sm text-gray-700">
-                        <input
-                          type="checkbox"
-                          value="sent"
-                          checked={selectedStatuses.includes("sent")}
-                          onChange={handleStatusChange}
-                          className="mr-2 leading-tight"
-                        />
-                        <span>Sent</span>
-                      </label>
-                      <label className="flex items-center px-4 py-2 text-sm text-gray-700">
-                        <input
-                          type="checkbox"
-                          value="delivered"
-                          checked={selectedStatuses.includes("delivered")}
-                          onChange={handleStatusChange}
-                          className="mr-2 leading-tight"
-                        />
-                        <span>Delivered</span>
-                      </label>
-                      <label className="flex items-center px-4 py-2 text-sm text-gray-700">
-                        <input
-                          type="checkbox"
-                          value="failed"
-                          checked={selectedStatuses.includes("failed")}
-                          onChange={handleStatusChange}
-                          className="mr-2 leading-tight"
-                        />
-                        <span>Failed</span>
-                      </label>
-                      <label className="flex items-center px-4 py-2 text-sm text-gray-700">
-                        <input
-                          type="checkbox"
-                          value="pending"
-                          checked={selectedStatuses.includes("pending")}
-                          onChange={handleStatusChange}
-                          className="mr-2 leading-tight"
-                        />
-                        <span>Pending</span>
-                      </label>
+                  {/* Status Filter */}
+                  <div className="w-full md:w-auto">
+                    <label htmlFor="status-filter" className="block text-sm font-medium text-gray-700 mb-2">
+                      Status
+                    </label>
+                    <div className="relative inline-block w-full md:w-64">
+                      <button
+                        type="button"
+                        onClick={toggleStatusDropdown}
+                        className="w-full bg-white border border-gray-300 rounded-md py-2 pl-3 pr-10 text-sm leading-5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none flex justify-between items-center"
+                      >
+                        <span>{selectedStatuses.length > 0 ? selectedStatuses.join(", ") : "Select Status"}</span>
+                        <svg
+                          className={`h-5 w-5 text-gray-400 ml-2 transform ${isStatusDropdownOpen ? "rotate-180" : ""}`}
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                      {isStatusDropdownOpen && (
+                        <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10 status-dropdown-menu">
+                          <label className="flex items-center px-4 py-2 text-sm text-gray-700">
+                            <input
+                              type="checkbox"
+                              value="sent"
+                              checked={selectedStatuses.includes("sent")}
+                              onChange={handleStatusChange}
+                              className="mr-2 leading-tight"
+                            />
+                            <span>Sent</span>
+                          </label>
+                          <label className="flex items-center px-4 py-2 text-sm text-gray-700">
+                            <input
+                              type="checkbox"
+                              value="delivered"
+                              checked={selectedStatuses.includes("delivered")}
+                              onChange={handleStatusChange}
+                              className="mr-2 leading-tight"
+                            />
+                            <span>Delivered</span>
+                          </label>
+                          <label className="flex items-center px-4 py-2 text-sm text-gray-700">
+                            <input
+                              type="checkbox"
+                              value="failed"
+                              checked={selectedStatuses.includes("failed")}
+                              onChange={handleStatusChange}
+                              className="mr-2 leading-tight"
+                            />
+                            <span>Failed</span>
+                          </label>
+                          <label className="flex items-center px-4 py-2 text-sm text-gray-700">
+                            <input
+                              type="checkbox"
+                              value="pending"
+                              checked={selectedStatuses.includes("pending")}
+                              onChange={handleStatusChange}
+                              className="mr-2 leading-tight"
+                            />
+                            <span>Pending</span>
+                          </label>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
+
+                  {/* Date Filters */}
+                  <div className="w-full md:w-auto">
+                    <label htmlFor="start-date" className="block text-sm font-medium text-gray-700 mb-2">
+                      Start Date
+                    </label>
+                    <input
+                      type="date"
+                      id="start-date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="w-full md:w-40 bg-white border border-gray-300 rounded-md py-2 px-3 text-sm leading-5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                  <div className="w-full md:w-auto">
+                    <label htmlFor="end-date" className="block text-sm font-medium text-gray-700 mb-2">
+                      End Date
+                    </label>
+                    <input
+                      type="date"
+                      id="end-date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="w-full md:w-40 bg-white border border-gray-300 rounded-md py-2 px-3 text-sm leading-5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+
+                  {/* Webinar Filter */}
+                  <div className="w-full md:w-auto">
+                    <label htmlFor="webinar-filter" className="block text-sm font-medium text-gray-700 mb-2">
+                      Webinar
+                    </label>
+                    <Select
+                      options={webinarTitles}
+                      value={webinarFilter ? { value: webinarFilter, label: webinarFilter } : null}
+                      onChange={(option) => setWebinarFilter(option ? option.value : "")}
+                      placeholder="Type to filter webinars"
+                      className="w-full md:w-64"
+                      classNamePrefix="react-select"
+                      isClearable
+                      isSearchable
+                      menuPlacement="auto"
+                      styles={{
+                        control: (provided) => ({
+                          ...provided,
+                          borderRadius: "4px",
+                          borderColor: "#d1d5db",
+                          boxShadow: "none",
+                          "&:hover": { borderColor: "#93c5fd" },
+                        }),
+                        menu: (provided) => ({
+                          ...provided,
+                          marginTop: "0",
+                          borderRadius: "4px",
+                          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                        }),
+                        option: (provided, state) => ({
+                          ...provided,
+                          backgroundColor: state.isFocused ? "#e0f2fe" : "white",
+                          color: state.isFocused ? "#1e40af" : "#374151",
+                        }),
+                      }}
+                    />
+                  </div>
+
+                  {/* Student Filter */}
+                  <div className="w-full md:w-auto">
+                    <label htmlFor="student-filter" className="block text-sm font-medium text-gray-700 mb-2">
+                      Student
+                    </label>
+                    <Select
+                      options={studentNames}
+                      value={studentFilter ? { value: studentFilter, label: studentFilter } : null}
+                      onChange={(option) => setStudentFilter(option ? option.value : "")}
+                      placeholder="Type to filter students"
+                      className="w-full md:w-64"
+                      classNamePrefix="react-select"
+                      isClearable
+                      isSearchable
+                      menuPlacement="auto"
+                      styles={{
+                        control: (provided) => ({
+                          ...provided,
+                          borderRadius: "4px",
+                          borderColor: "#d1d5db",
+                          boxShadow: "none",
+                          "&:hover": { borderColor: "#93c5fd" },
+                        }),
+                        menu: (provided) => ({
+                          ...provided,
+                          marginTop: "0",
+                          borderRadius: "4px",
+                          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                        }),
+                        option: (provided, state) => ({
+                          ...provided,
+                          backgroundColor: state.isFocused ? "#e0f2fe" : "white",
+                          color: state.isFocused ? "#1e40af" : "#374151",
+                        }),
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
-
-              {/* Date Filters */}
-              <div className="w-full md:w-auto">
-                <label htmlFor="start-date" className="block text-sm font-medium text-gray-700 mb-2">
-                  Start Date
-                </label>
-                <input
-                  type="date"
-                  id="start-date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full md:w-40 bg-white border border-gray-300 rounded-md py-2 px-3 text-sm leading-5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div className="w-full md:w-auto">
-                <label htmlFor="end-date" className="block text-sm font-medium text-gray-700 mb-2">
-                  End Date
-                </label>
-                <input
-                  type="date"
-                  id="end-date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="w-full md:w-40 bg-white border border-gray-300 rounded-md py-2 px-3 text-sm leading-5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-
-              {/* Webinar Filter */}
-              <div className="w-full md:w-auto">
-                <label htmlFor="webinar-filter" className="block text-sm font-medium text-gray-700 mb-2">
-                  Webinar
-                </label>
-                <Select
-                  options={webinarTitles}
-                  value={webinarFilter ? { value: webinarFilter, label: webinarFilter } : null}
-                  onChange={(option) => setWebinarFilter(option ? option.value : "")}
-                  placeholder="Type to filter webinars"
-                  className="w-full md:w-64"
-                  classNamePrefix="react-select"
-                  isClearable
-                  isSearchable
-                  menuPlacement="auto"
-                  styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      borderRadius: "4px",
-                      borderColor: "#d1d5db",
-                      boxShadow: "none",
-                      "&:hover": { borderColor: "#93c5fd" },
-                    }),
-                    menu: (provided) => ({
-                      ...provided,
-                      marginTop: "0",
-                      borderRadius: "4px",
-                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                    }),
-                    option: (provided, state) => ({
-                      ...provided,
-                      backgroundColor: state.isFocused ? "#e0f2fe" : "white",
-                      color: state.isFocused ? "#1e40af" : "#374151",
-                    }),
-                  }}
-                />
-              </div>
-
-              {/* Student Filter */}
-              <div className="w-full md:w-auto">
-                <label htmlFor="student-filter" className="block text-sm font-medium text-gray-700 mb-2">
-                  Student
-                </label>
-                <Select
-                  options={studentNames}
-                  value={studentFilter ? { value: studentFilter, label: studentFilter } : null}
-                  onChange={(option) => setStudentFilter(option ? option.value : "")}
-                  placeholder="Type to filter students"
-                  className="w-full md:w-64"
-                  classNamePrefix="react-select"
-                  isClearable
-                  isSearchable
-                  menuPlacement="auto"
-                  styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      borderRadius: "4px",
-                      borderColor: "#d1d5db",
-                      boxShadow: "none",
-                      "&:hover": { borderColor: "#93c5fd" },
-                    }),
-                    menu: (provided) => ({
-                      ...provided,
-                      marginTop: "0",
-                      borderRadius: "4px",
-                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                    }),
-                    option: (provided, state) => ({
-                      ...provided,
-                      backgroundColor: state.isFocused ? "#e0f2fe" : "white",
-                      color: state.isFocused ? "#1e40af" : "#374151",
-                    }),
-                  }}
-                />
-              </div>
-            </div>
-
-
-
 
                 {/* Notifications Table */}
                 <div className="bg-white rounded-lg shadow-md overflow-hidden">
