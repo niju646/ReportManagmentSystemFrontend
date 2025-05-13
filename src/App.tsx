@@ -71,7 +71,7 @@ const App: React.FC = () => {
   return (
     
     <AuthProvider>
-      <Toaster position="top-center" reverseOrder={false} />
+      <Toaster position="top-center" reverseOrder={false}  toastOptions={{style:{background:'#333',color:'#fff'}}}/>
       <Router>
         <Routes>
           <Route path="/login" element={<LoginForm />} />
